@@ -12,7 +12,7 @@ BASE_ID = os.getenv("AIRTABLE_BASE_ID")
 TABLE_NAME = os.getenv("AIRTABLE_TABLE_ID")
 AIRTABLE_ENDPOINT = f"https://api.airtable.com/v0/{BASE_ID}/{TABLE_NAME}"
 HEADERS = {
-    "Authorization": f"Bearer {BASE_ID}"
+    "Authorization": f"Bearer {AIRTABLE_TOKEN}"
 }
 
 api = Api(AIRTABLE_TOKEN)
