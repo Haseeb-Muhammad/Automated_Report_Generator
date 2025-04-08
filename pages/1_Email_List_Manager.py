@@ -15,6 +15,7 @@ HEADERS = {
     "Authorization": f"Bearer {AIRTABLE_TOKEN}"
 }
 
+
 api = Api(AIRTABLE_TOKEN)
 table = api.table(BASE_ID, TABLE_NAME)
 records = table.all()
@@ -43,7 +44,6 @@ def delete_records(email):
             print(f"✅ Deleted record ID: {record_id}")
         else:
             print(f"❌ Failed to delete record ID: {record_id}, Error: {response.text}")
-
 
 def add_email_to_airtable(email):
     # print(f"Adding email: {email}")
