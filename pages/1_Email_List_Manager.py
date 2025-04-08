@@ -15,28 +15,23 @@ HEADERS = {
     "Authorization": f"Bearer {AIRTABLE_TOKEN}"
 }
 
-
 api = Api(AIRTABLE_TOKEN)
 table = api.table(BASE_ID, TABLE_NAME)
 records = table.all()
-# print(f"{table=}")
 
+# Initialize email list in session state
+if "emails" not in st.session_state:
+    st.session_state.emails = []
 
-def find_record_id_by_email(email):
-    response = requests.get(AIRTABLE_ENDPOINT, headers=HEADERS)
-    response.raise_for_status()
-    print(f"{response=}")
-    records = response.json().get("records", [])
-    print(f"{records=}")
-    recordIDs = []
-    for record in records:
-        if record["fields"]["Email"] == email:
-            recordIDs.append(record["id"])
-        print(record["fields"]["Email"])
-    return recordIDs
+for record in records:
+    st.session_state.emails.append(record["fields"]["Email"])
 
 def delete_records(email):
-    record_ids = find_record_id_by_email(email)
+    record_ids = []
+    for record in records:
+        if record["fields"]["Email"] == email:
+            record_ids.append(record["id"])
+        print(record["fields"]["Email"])
     for record_id in record_ids:
         url = f"{AIRTABLE_ENDPOINT}/{record_id}"
         response = requests.delete(url, headers=HEADERS)
