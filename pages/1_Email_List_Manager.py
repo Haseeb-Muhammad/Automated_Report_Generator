@@ -22,13 +22,17 @@ records = table.all()
 
 
 def find_record_id_by_email(email):
-    params = {
-        "filterByFormula": f"{{Email}} = '{email}'"
-    }
-    response = requests.get(AIRTABLE_ENDPOINT, headers=HEADERS, params=params)
+    response = requests.get(AIRTABLE_ENDPOINT, headers=HEADERS)
     response.raise_for_status()
+    print(f"{response=}")
     records = response.json().get("records", [])
-    return [record["id"] for record in records]
+    print(f"{records=}")
+    recordIDs = []
+    for record in records:
+        if record["fields"]["Email"] == email:
+            recordIDs.append(record["id"])
+        print(record["fields"]["Email"])
+    return recordIDs
 
 def delete_records(email):
     record_ids = find_record_id_by_email(email)
