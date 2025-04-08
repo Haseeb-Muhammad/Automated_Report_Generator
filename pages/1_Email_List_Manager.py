@@ -25,6 +25,8 @@ if "emails" not in st.session_state:
 for record in records:
     st.session_state.emails.append(record["fields"]["Email"])
 
+st.session_state.email_number = st.session_state.emails
+
 def delete_records(email):
     record_ids = []
     for record in records:
@@ -41,7 +43,8 @@ def delete_records(email):
 
 def add_email_to_airtable(email):
     if email not in st.session_state.emails:
-        table.create({"Email": email})
+        table.create({"ID":st.session_state.email_number,"Email": email})
+        st.session_state.email_number += 1
     else:
         pass
 
