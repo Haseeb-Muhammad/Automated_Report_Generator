@@ -10,16 +10,41 @@ load_dotenv()
 AIRTABLE_TOKEN = os.getenv("AIRTABLE_TOKEN")
 BASE_ID = os.getenv("AIRTABLE_BASE_ID")
 TABLE_NAME = os.getenv("AIRTABLE_TABLE_ID")
+AIRTABLE_ENDPOINT = f"https://api.airtable.com/v0/{BASE_ID}/{TABLE_NAME}"
+HEADERS = {
+    "Authorization": f"Bearer {BASE_ID}"
+}
 
 api = Api(AIRTABLE_TOKEN)
 table = api.table(BASE_ID, TABLE_NAME)
 records = table.all()
 # print(f"{table=}")
 
+
+def find_record_id_by_email(email):
+    params = {
+        "filterByFormula": f"{{Email}} = '{email}'"
+    }
+    response = requests.get(AIRTABLE_ENDPOINT, headers=HEADERS, params=params)
+    response.raise_for_status()
+    records = response.json().get("records", [])
+    return [record["id"] for record in records]
+
+def delete_records(email):
+    record_ids = find_record_id_by_email(email)
+    for record_id in record_ids:
+        url = f"{AIRTABLE_ENDPOINT}/{record_id}"
+        response = requests.delete(url, headers=HEADERS)
+        if response.status_code == 200:
+            print(f"✅ Deleted record ID: {record_id}")
+        else:
+            print(f"❌ Failed to delete record ID: {record_id}, Error: {response.text}")
+
+
 def add_email_to_airtable(email):
-    print(f"Adding email: {email}")
-    print(f"Token: {AIRTABLE_TOKEN}")
-    print(f"Base: {BASE_ID}, Table: {TABLE_NAME}")
+    # print(f"Adding email: {email}")
+    # print(f"Token: {AIRTABLE_TOKEN}")
+    # print(f"Base: {BASE_ID}, Table: {TABLE_NAME}")
     table.create({"Email": email})
 
 # Initialize email list in session state
@@ -50,6 +75,7 @@ if st.session_state.emails:
         if col2.button("❌", key=email):
             st.session_state.emails.remove(email)
             st.experimental_rerun()
+            delete_records(email)
 else:
     st.info("No emails in the list yet.")
 
