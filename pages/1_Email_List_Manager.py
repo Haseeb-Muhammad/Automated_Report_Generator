@@ -78,7 +78,7 @@ if st.session_state.emails:
         col1.write(email)
         if col2.button("❌", key=email):
             st.session_state.emails.remove(email)
-            # st.experimental_rerun()
+            st.rerun()
             delete_records(email)
 else:
     st.info("No emails in the list yet.")
