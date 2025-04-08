@@ -19,7 +19,6 @@ api = Api(AIRTABLE_TOKEN)
 table = api.table(BASE_ID, TABLE_NAME)
 records = table.all()
 
-# Initialize email list in session state
 if "emails" not in st.session_state:
     st.session_state.emails = []
 
@@ -41,19 +40,17 @@ def delete_records(email):
             print(f"❌ Failed to delete record ID: {record_id}, Error: {response.text}")
 
 def add_email_to_airtable(email):
-    # print(f"Adding email: {email}")
-    # print(f"Token: {AIRTABLE_TOKEN}")
-    # print(f"Base: {BASE_ID}, Table: {TABLE_NAME}")
-    table.create({"Email": email})
+    if email not in st.session_state.emails:
+        table.create({"Email": email})
+    else:
+        pass
 
-# Initialize email list in session state
 if "emails" not in st.session_state:
     st.session_state.emails = []
 
 st.set_page_config(page_title="Email Manager", layout="centered")
 st.title("📧 Email List Manager")
 
-# Add new email
 with st.form("email_form", clear_on_submit=True):
     new_email = st.text_input("Add new email", placeholder="example@email.com")
     submitted = st.form_submit_button("Add")
@@ -65,7 +62,6 @@ with st.form("email_form", clear_on_submit=True):
         else:
             st.warning("This email is already in the list.")
 
-# Display current emails
 st.subheader("Current Session Email List")
 if st.session_state.emails:
     for email in st.session_state.emails:
