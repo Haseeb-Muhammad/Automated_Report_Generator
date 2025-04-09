@@ -67,8 +67,8 @@ if emails:
     for email in emails:
         col1, col2 = st.columns([0.85, 0.15])
         col1.write(email)
+        count +=1
         if col2.button("❌", key=count):
-            count +=1
             emails(email)
             delete_records(email)
             st.rerun()
