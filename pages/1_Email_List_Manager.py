@@ -52,7 +52,7 @@ with st.form("email_form", clear_on_submit=True):
     new_email = st.text_input("Add new email")
     submitted = st.form_submit_button("Add")
     if submitted and new_email:
-        print(f"{st.session_emails=}")
+        # print(f"{st.session_emails=}")
         if new_email not in emails:
             success = add_email_to_airtable(new_email)
             emails.append(new_email)
