@@ -65,10 +65,11 @@ with st.form("email_form", clear_on_submit=True):
 
 st.subheader("Current Session Email List")
 if st.session_state.emails:
+    print(st.session_state.emails)
     for email in st.session_state.emails:
         col1, col2 = st.columns([0.85, 0.15])
         col1.write(email)
-        if col2.button("❌", key=email):
+        if col2.button("❌"):
             st.session_state.emails.remove(email)
             delete_records(email)
             st.rerun()
