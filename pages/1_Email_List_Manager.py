@@ -18,6 +18,7 @@ HEADERS = {
 api = Api(AIRTABLE_TOKEN)
 table = api.table(BASE_ID, TABLE_NAME)
 records = table.all()
+local_emails=[]
 
 if "emails" not in st.session_state:
     st.session_state.emails = []
@@ -38,7 +39,6 @@ def delete_records(email):
             print(f"✅ Deleted record ID: {record_id}")
         else:
             print(f"❌ Failed to delete record ID: {record_id}, Error: {response.text}")
-
 def add_email_to_airtable(email):
     if email not in st.session_state.emails:
         table.create({"Email": email})
@@ -56,6 +56,7 @@ with st.form("email_form", clear_on_submit=True):
     new_email = st.text_input("Add new email")
     submitted = st.form_submit_button("Add")
     if submitted and new_email:
+        print(f"{st.session_emails=}")
         if new_email not in st.session_state.emails:
             success = add_email_to_airtable(new_email)
             st.session_state.emails.append(new_email)
