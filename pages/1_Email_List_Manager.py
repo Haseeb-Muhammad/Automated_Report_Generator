@@ -25,8 +25,6 @@ if "emails" not in st.session_state:
 for record in records:
     st.session_state.emails.append(record["fields"]["Email"])
 
-st.session_state.email_number = st.session_state.emails
-
 def delete_records(email):
     record_ids = []
     for record in records:
@@ -43,9 +41,9 @@ def delete_records(email):
 
 def add_email_to_airtable(email):
     if email not in st.session_state.emails:
-        table.create({"ID":st.session_state.email_number,"Email": email})
-        st.session_state.email_number += 1
+        table.create({"Email": email})
     else:
+        print("already present")
         pass
 
 if "emails" not in st.session_state:
@@ -55,7 +53,7 @@ st.set_page_config(page_title="Email Manager", layout="centered")
 st.title("📧 Email List Manager")
 
 with st.form("email_form", clear_on_submit=True):
-    new_email = st.text_input("Add new email", placeholder="example@email.com")
+    new_email = st.text_input("Add new email")
     submitted = st.form_submit_button("Add")
     if submitted and new_email:
         if new_email not in st.session_state.emails:
