@@ -69,7 +69,7 @@ if emails:
         col1.write(email)
         count +=1
         if col2.button("❌", key=count):
-            email.remove(email)
+            emails.remove(email)
             delete_records(email)
             st.rerun()
 else:
