@@ -36,3 +36,6 @@ if st.button("Generate Report"):
         st.info(report)
     else:
         st.warning("Please enter a topic.")
+        
+    if st.button("Send Report"):
+        pass

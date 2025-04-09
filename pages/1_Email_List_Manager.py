@@ -18,12 +18,11 @@ HEADERS = {
 api = Api(AIRTABLE_TOKEN)
 table = api.table(BASE_ID, TABLE_NAME)
 records = table.all()
-local_emails=[]
 
-emails = []
+st.session_state.emails = []
 
 for record in records:
-    emails.append(record["fields"]["Email"])
+    st.session_state.emails.append(record["fields"]["Email"])
 
 def delete_records(email):
     record_ids = []
@@ -39,7 +38,7 @@ def delete_records(email):
         else:
             print(f"❌ Failed to delete record ID: {record_id}, Error: {response.text}")
 def add_email_to_airtable(email):
-    if email not in emails:
+    if email not in st.session_state.emails:
         table.create({"Email": email})
     else:
         print("already present")
@@ -53,23 +52,23 @@ with st.form("email_form", clear_on_submit=True):
     submitted = st.form_submit_button("Add")
     if submitted and new_email:
         # print(f"{st.session_emails=}")
-        if new_email not in emails:
+        if new_email not in st.session_state.emails:
             success = add_email_to_airtable(new_email)
-            emails.append(new_email)
+            st.session_state.emails.append(new_email)
             st.success(f"Added to Airtable: {new_email}")
         else:
             st.warning("This email is already in the list.")
 
 st.subheader("Current Session Email List")
 count=0
-if emails:
-    print(f"{emails=}")
-    for email in emails:
+if st.session_state.emails:
+    print(f"{st.session_state.emails=}")
+    for email in st.session_state.emails:
         col1, col2 = st.columns([0.85, 0.15])
         col1.write(email)
         count +=1
         if col2.button("❌", key=count):
-            emails.remove(email)
+            st.session_state.emails.remove(email)
             delete_records(email)
             st.rerun()
 else:
